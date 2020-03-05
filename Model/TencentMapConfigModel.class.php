@@ -13,4 +13,6 @@ use Think\Model;
 class TencentMapConfigModel extends Model
 {
     protected $tableName = 'lbs_config_tencent';
+
+
 }
