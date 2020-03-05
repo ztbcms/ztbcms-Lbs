@@ -48,6 +48,16 @@ class TencentMapConfigService extends BaseService
     }
 
     /**
+     * 添加配置项
+     *
+     * @param array $data
+     * @return array
+     */
+    static function createCongfig($data = []) {
+        return self::create('Lbs/TencentMapOtherConfig', $data);
+    }
+
+    /**
      * 更新
      *
      * @param       $id
@@ -67,4 +77,47 @@ class TencentMapConfigService extends BaseService
     static function deleteItem($id) {
         return self::delete('Lbs/TencentMapConfig', ['id' => $id]);
     }
+
+
+    /**
+     * 删除配置项
+     *
+     * @param $id
+     * @return array
+     */
+    static function deleteConfig($id) {
+        return self::delete('Lbs/TencentMapOtherConfig', ['id' => $id]);
+    }
+
+
+
+    /**
+     * 获取配置信息
+     * @param $key
+     */
+    static function getConfigByKey($key){
+        $where = null;
+        if($key) $where['key'] = $key;
+        return self::select('Lbs/TencentMapOtherConfig', $where);
+    }
+
+    /**
+     * 更新配置信息
+     * @param  $key
+     * @param array $data
+     * @return array
+     */
+    static function updateConfigByKey($key, $value ,$data = []) {
+        return self::update('Lbs/TencentMapOtherConfig', [$key => $value], $data);
+    }
+
+    /**
+     * 删除地址信息
+     * @param $id
+     * @return array
+     */
+    static function deleteAddress($id) {
+        return self::delete('Lbs/TencentMapAddress', ['id' => $id]);
+    }
+
 }

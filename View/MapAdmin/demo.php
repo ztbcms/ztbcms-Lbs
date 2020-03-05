@@ -50,7 +50,7 @@
                         </el-form-item>
                         <template v-if="location_njx.address">
                             <p style="margin: 0;">地点名称：{{ location_njx.address }}</p>
-                            <p style="margin: 0;">人性化标识：{{ location_njx.formatted_addresses }}</p>
+                            <p style="margin: 0;" v-if="location_njx.formatted_addresses">人性化标识：{{ location_njx.formatted_addresses }}</p>
                         </template>
 
                         <el-button style="margin-top: 8px" type="primary" @click="to_geocoder_location_tencent">坐标解析</el-button>

@@ -13,6 +13,9 @@ use Lbs\Service\TencentMapService;
 
 class MapAdminController extends AdminBase
 {
+    /**
+     * 实例页面
+     */
     function demo()
     {
         $this->display();
@@ -31,18 +34,24 @@ class MapAdminController extends AdminBase
     }
 
     /**
-     *  接收地址，或者坐标，返回数据
+     * 通过地址解析坐标
+     * @param string $address 地址
+     * @param string $region  指定地址所属城市
+     * @return array
+     *
      */
     function geocoder_address_tencent(){
         $service = new TencentMapService();
         $address = I('address');
-        $region = I('address');
+        $region = I('region');
         $res = $service->geocoder_address($address, $region);
         $this->ajaxReturn($res);
     }
 
     /**
-     *  接收坐标，返回地址数据
+     * 通过坐标逆解析地址
+     * @param string $location 坐标
+     * @return array
      */
     function geocoder_location_tencent(){
         $service = new TencentMapService();
