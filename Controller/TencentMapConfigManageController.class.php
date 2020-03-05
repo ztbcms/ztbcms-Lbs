@@ -48,6 +48,13 @@ class TencentMapConfigManageController extends AdminBase
         $this->ajaxReturn($res);
     }
 
+    function doDeleteConfig()
+    {
+        $id = I('post.id');
+        $res = TencentMapConfigService::deleteConfig($id);
+        $this->ajaxReturn($res);
+    }
+
     function getDetail()
     {
         $id = I('id');
@@ -62,5 +69,40 @@ class TencentMapConfigManageController extends AdminBase
         $res = TencentMapConfigService::getList([], 'id desc', $page, $limit);
         $this->ajaxReturn($res);
     }
+
+    //显示编辑配置项
+    function editKey()
+    {
+        $this->display();
+    }
+
+    //获取单一配置项
+    function getKeyconfig(){
+        $key = I('key','');
+        $res = TencentMapConfigService::getConfigByKey($key);
+        $this->ajaxReturn($res);
+    }
+
+    /**
+     *  修改单一配置项
+     *  @param $key
+     */
+    function doEditKeyconfig()
+    {
+        $data = I('post.');
+        $data['key'] = I('post.key', '', '');
+        $data['name'] = I('post.name', '', '');
+        $data['value'] = I('post.value', '', '');
+        if (empty($data['id'])) {
+            $res = TencentMapConfigService::createCongfig($data);
+        } else {
+            $id = $data['id'];
+            unset($data['id']);
+            $res = TencentMapConfigService::updateConfigByKey('id',$id, $data);
+        }
+        $this->ajaxReturn($res);
+    }
+
+
 
 }

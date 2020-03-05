@@ -10,9 +10,9 @@ namespace Lbs\Model;
 
 use Think\Model;
 
-class TencentMapConfigModel extends Model
+class TencentMapOtherConfigModel extends Model
 {
-    protected $tableName = 'lbs_config_tencent';
+    protected $tableName = 'lbs_config';
 
 
 }
