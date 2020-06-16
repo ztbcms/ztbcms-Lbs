@@ -4,16 +4,14 @@ CREATE TABLE `cms_lbs_config_tencent` (
   `key` varchar(128) DEFAULT NULL,
   `secret_key` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `cms_lbs_config_tencent` (`id`, `key`, `secret_key`)
 VALUES
 	(1, '4LHBZ-R7RKG-FVAQO-I63RU-M3XKF-73BHZ', NULL);
 	(2, 'MDNBZ-KIOCW-T6PRJ-OUNPH-VFQ6H-EKBEP', NULL);
 
--- ----------------------------
--- Table structure for cms_lbs_address_info
--- ----------------------------
+
 DROP TABLE IF EXISTS `cms_lbs_address_info`;
 CREATE TABLE `cms_lbs_address_info`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -28,13 +26,10 @@ CREATE TABLE `cms_lbs_address_info`  (
   `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `address`(`address`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- ----------------------------
--- Table structure for cms_lbs_config
--- ----------------------------
 DROP TABLE IF EXISTS `cms_lbs_config`;
 CREATE TABLE `cms_lbs_config`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -42,11 +37,19 @@ CREATE TABLE `cms_lbs_config`  (
   `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ----------------------------
--- Records of cms_lbs_config
--- ----------------------------
 INSERT INTO `cms_lbs_config` VALUES (1, 'time', '30', '地址缓存更新时间(天)');
 
-SET FOREIGN_KEY_CHECKS = 1;
+DROP TABLE IF EXISTS `cms_lbs_geohash`;
+CREATE TABLE `cms_lbs_geohash` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `target_type` varchar(32) NOT NULL DEFAULT '' COMMENT '地点类型',
+  `target_id` varchar(32) NOT NULL DEFAULT '' COMMENT '地点唯一标志',
+  `latitude` varchar(32) NOT NULL DEFAULT '' COMMENT '纬度',
+  `longitude` varchar(32) NOT NULL DEFAULT '' COMMENT '经度',
+  `geohash` varchar(16) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `target_type` (`target_type`),
+  KEY `geohash` (`geohash`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
