@@ -140,10 +140,10 @@ class GeoService extends BaseService
     /**
      * 以给定的经纬度为中心，返回目标集合中与中心的距离不超过给定最大距离的所有位置对象
      *
-     * @param $target_type
-     * @param $longitude
-     * @param $latitude
-     * @param $radius
+     * @param $target_type string 类型
+     * @param $latitude string|float 纬度
+     * @param $longitude string|float 经度
+     * @param $radius int 半径 单位：米
      *
      * @return array
      */
@@ -182,11 +182,11 @@ class GeoService extends BaseService
             }
         }
 
-        //排序,由近到远
+        //排序,由近到远,同一距离时按 target_id 大的优先
         usort($return_data, function ($a, $b)
         {
             if ($a['distance'] == $b['distance']) {
-                return $a['distance'] < $b['distance'];
+                return $a['target_id'] < $b['target_id'];
             }
             return $a['distance'] > $b['distance'];
         });
