@@ -20,6 +20,21 @@
                 </el-form>
             </div>
 
+            <h3>地图拾点</h3>
+            <div class="filter-container">
+                <el-form >
+                    <el-form-item required>
+                        <template v-if="locationV2.ad_info">
+                            <p style="margin: 0;">城市：{{ locationV2.ad_info }}</p>
+                            <p style="margin: 0;">地点名称：{{ locationV2.formatted_addresses }}</p>
+                            <p style="margin: 0;">位置：{{ locationV2.address }}</p>
+                            <p style="margin: 0;">经纬度：{{ locationV2.lng }},{{ locationV2.lat }}</p>
+                        </template>
+                        <el-button type="primary" @click="toLocationPickerV2">选择地址</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+
             <h3>地址解析</h3>
             <div class="filter-container">
                 <el-form >
@@ -80,6 +95,13 @@
                             lng: '',
                         },
                     },
+                    locationV2: {
+                        ad_info: '',
+                        formatted_addresses: '',
+                        address: '',
+                        lng: '',
+                        lat: '',
+                    },
                     //地址转坐标
                     location_jx: {
                         address: '',
@@ -108,6 +130,14 @@
                             area: ['50%', '80%'],
                         })
                     },
+                    toLocationPickerV2: function () {
+                        layer.open({
+                            type: 2,
+                            title: '操作',
+                            content: "/Lbs/MapAdmin/select_address_tencentV2",
+                            area: ['50%', '80%'],
+                        })
+                    },
                     //选点获取地址信息
                     onReceiveLocation: function(event){
                         var that = this;
@@ -118,6 +148,18 @@
                             console.log(res)
                             this.location = res
                         }
+                    },
+                    onReceiveLocationV2: function(event){
+                        var that = this;
+                        console.log(event)
+                        var result = event.detail.result
+                        var url = '/Lbs/MapAdmin/geocoder_location_tencent?location='+result.lat+','+result.lng
+                        $.get(url, function (res) {
+                            console.log(res);
+                            if(res.status){
+                                that.locationV2 = res.data
+                            }
+                        })
                     },
                     //地址转坐标
                     to_geocoder_address_tencent: function(){
@@ -143,6 +185,7 @@
                 },
                 mounted: function () {
                     window.addEventListener('LBS_LOCATION_PICKER', this.onReceiveLocation.bind(this));
+                    window.addEventListener('LBS_LOCATION_PICKERV2', this.onReceiveLocationV2.bind(this));
                 },
             })
         })
