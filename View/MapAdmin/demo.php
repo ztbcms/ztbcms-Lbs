@@ -3,17 +3,15 @@
 <block name="content">
     <div id="app" style="padding: 8px;" v-cloak>
         <el-card>
-            <h3>演示</h3>
-            <p>拾取标：<a href="http://www.gpsspg.com/maps.htm">http://www.gpsspg.com/maps.htm</a></p>
-            <h3></h3>
+            <h3>地图拾点</h3>
             <div class="filter-container">
                 <el-form >
                     <el-form-item required>
-                        <template v-if="location.cityname">
-                            <p style="margin: 0;">城市：{{ location.cityname }}</p>
-                            <p style="margin: 0;">地点名称：{{ location.poiname }}</p>
-                            <p style="margin: 0;">位置：{{ location.poiaddress }}</p>
-                            <p style="margin: 0;">经纬度：{{ location.latlng.lng }},{{ location.latlng.lat }}</p>
+                        <template v-if="location.ad_info">
+                            <p style="margin: 0;">城市：{{ location.ad_info }}</p>
+                            <p style="margin: 0;">地点名称：{{ location.formatted_addresses }}</p>
+                            <p style="margin: 0;">位置：{{ location.address }}</p>
+                            <p style="margin: 0;">经纬度：{{ location.lng }},{{ location.lat }}</p>
                         </template>
                         <el-button type="primary" @click="toLocationPicker">选择地址</el-button>
                     </el-form-item>
@@ -72,13 +70,11 @@
                 el: '#app',
                 data: {
                     location: {
-                        cityname: '',
-                        poiname: '',
-                        poiaddress: '',
-                        latlng: {
-                            lat: '',
-                            lng: '',
-                        },
+                        ad_info: '',
+                        formatted_addresses: '',
+                        address: '',
+                        lng: '',
+                        lat: '',
                     },
                     //地址转坐标
                     location_jx: {
@@ -112,12 +108,14 @@
                     onReceiveLocation: function(event){
                         var that = this;
                         console.log(event)
-                        var res = event.detail.result
-                        console.log(res)
-                        if (res) {
-                            console.log(res)
-                            this.location = res
-                        }
+                        var result = event.detail.result
+                        var url = '/Lbs/MapAdmin/geocoder_location_tencent?location='+result.lat+','+result.lng
+                        $.get(url, function (res) {
+                            console.log(res);
+                            if(res.status){
+                                that.location = res.data
+                            }
+                        })
                     },
                     //地址转坐标
                     to_geocoder_address_tencent: function(){

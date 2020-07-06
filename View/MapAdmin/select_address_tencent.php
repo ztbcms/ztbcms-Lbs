@@ -2,45 +2,58 @@
 
 <block name="content">
     <div id="app" style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;" v-cloak>
-        <iframe v-if="url" width="100%" height="100%" frameborder=0
-                :src="url">
-        </iframe>
+        <div id="mapContainer" style="width:100%;height:100%;"></div>
+        <el-button @click="submit" type="primary" style="position: absolute;bottom: 20px;right: 20px;">确定</el-button>
     </div>
-
-    <style>
-
-    </style>
+    <script charset="utf-8" src="//map.qq.com/api/js?v=2.exp&key={$key}"></script>
     <script>
         $(document).ready(function () {
             new Vue({
                 el: '#app',
                 data: {
-                    //参数请参考：https://lbs.qq.com/tool/component-picker.html ,这里只使用了常用的
-                    type: '1',
-                    search: '1',
-                    policy: '1',
-                    key: "{$key}",
-                    referer: 'myapp',
-                    url: '',
-
+                    latLng: null
                 },
                 watch: {},
                 filters: {},
                 methods: {
-                    onReceiveMapMessage: function(event){
-                        // 接收位置信息，用户选择确认位置点后选点组件会触发该事件，回传用户的位置信息
-                        //格式：{module: "locationPicker", latlng: {lat: 23.08249,lng: 113.31701}, poiaddress: "广东省广州市海珠区广州大道南1023", poiname: "名粤小区", cityname: "广州市"}
-                        var loc = event.data;
+                    initMap: function(){
+                        var that = this;
+                        layer.load(1, {shade: [0.5,'#000']});
+                        var center = new qq.maps.LatLng(39.916527, 116.397128);
+                        var map = new qq.maps.Map(document.getElementById('mapContainer'), {
+                            center: center,
+                            zoom: 13
+                        });
+                        //获取城市列表接口设置中心点
+                        citylocation = new qq.maps.CityService({
+                            complete: function (result) {
+                                layer.closeAll();
+                                map.setCenter(result.detail.latLng);
+                                that.latLng = result.detail.latLng;
+                                //添加标记
+                                marker = new qq.maps.Marker({
+                                    position: result.detail.latLng,
+                                    map: map
+                                });
+                                qq.maps.event.addListener(map, 'click', function(e){
+                                    console.log(e);
+                                    marker.setPosition(e.latLng);
 
-                        //防止其他应用也会向该页面post信息，需判断module是否为'locationPicker'
-                        if (loc && loc.module == 'locationPicker') {
-                            var event = document.createEvent('CustomEvent');
-                            event.initCustomEvent('LBS_LOCATION_PICKER', true, true, {
-                                result: loc
-                            });
-                            window.parent.dispatchEvent(event)
-                            this.closePanel();
-                        }
+                                    that.latLng = e.latLng;
+                                });
+                            }
+                        });
+                        //调用searchLocalCity();方法    根据用户IP查询城市信息。
+                        citylocation.searchLocalCity();
+                    },
+                    submit: function(){
+                        var that = this;
+                        var event = document.createEvent('CustomEvent');
+                        event.initCustomEvent('LBS_LOCATION_PICKER', true, true, {
+                            result: that.latLng
+                        });
+                        window.parent.dispatchEvent(event)
+                        that.closePanel();
                     },
                     closePanel: function(){
                         if(parent.window.layer){
@@ -48,23 +61,11 @@
                         }else{
                             window.close();
                         }
-                    },
+                    }
                 },
                 mounted: function () {
-                    //注册回掉
-                    window.addEventListener('message', this.onReceiveMapMessage.bind(this), false)
-
-
-                    var url = 'https://apis.map.qq.com/tools/locpicker?'
-                    url += 'type=' + this.type
-                    url += '&search=' + this.search
-                    url += '&policy=' + this.policy
-                    url += '&key=' + this.key
-                    url += '&referer=' + this.referer
-                    this.url = url
-
-
-                },
+                    this.initMap();
+                }
             })
         })
     </script>
