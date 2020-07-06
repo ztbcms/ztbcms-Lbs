@@ -34,6 +34,17 @@ class MapAdminController extends AdminBase
     }
 
     /**
+     * 选点返回数据
+     */
+    function select_address_tencentV2()
+    {
+        $service = new TencentMapService();
+        $key = $service->getKey()['data'];
+        $this->assign('key', $key);
+        $this->display();
+    }
+
+    /**
      * 通过地址解析坐标
      * @param string $address 地址
      * @param string $region  指定地址所属城市
